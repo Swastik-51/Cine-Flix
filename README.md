@@ -120,7 +120,7 @@ $$P(c \mid \vec{x}) \propto P(c) \prod_{j=1}^{d} P(x_j \mid c)^{x_j}$$
 ## 📁 Project Structure
 
 ```
-AJAX-Movie-Recommendation-System-with-Sentiment-Analysis/
+Movie-Recommendation-System-with-Sentiment-Analysis/
 ├── datasets/                   # Raw & processed movie datasets
 │   ├── data.csv
 │   ├── final_data.csv
