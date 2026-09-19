@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineFlix — Movie Recommendation & Sentiment Analysis | By Swastik Sengupta</title>
+  <meta name="author" content="Swastik Sengupta">
+  <meta name="description" content="Spatial movie recommendation system with NLP sentiment analysis crafted by Swastik Sengupta.">
+
+  <!-- Google Fonts: Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Custom Apple VisionOS Stylesheet -->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+
+  <script type="text/javascript">
+    var films = {{ suggestions|tojson }};
+  </script>
+</head>
+
+<body>
+  <!-- VisionOS Frosted Navigation Bar -->
+  <header class="navbar-custom">
+    <a href="/" class="brand-wrapper">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/>
+        </svg>
+      </div>
+      <div class="brand-text">CineFlix <span>OS</span></div>
+    </a>
+
+    <div class="creator-badge">
+      <i class="fa-solid fa-code" style="color: var(--accent-red); margin-right: 4px;"></i>
+      <span>Created by</span>
+      <strong>Swastik Sengupta</strong>
+    </div>
+  </header>
+
+  <!-- Content Body Area (Expands to push footer to bottom) -->
+  <div class="content-body">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <h1 class="hero-title">
+        Discover Your Next <br><span class="vision-gradient-text">Favorite Film</span>
+      </h1>
+      
+      <p class="hero-subtitle">
+        Content-based recommendations powered by cosine similarity and real audience sentiment analysis.
+      </p>
+
+      <!-- VisionOS Search Box -->
+      <div class="search-container">
+        <div class="search-box-wrapper">
+          <div class="search-icon-left">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </div>
+          <input 
+            type="text" 
+            name="movie" 
+            class="movie" 
+            id="autoComplete" 
+            autocomplete="off" 
+            placeholder="Search any film (e.g., Inception, Avatar, Interstellar)..." 
+            required="required"
+          />
+          <button class="btn-search movie-button" disabled="true">
+            <i class="fa-solid fa-arrow-right"></i>
+            <span>Search</span>
+          </button>
+        </div>
+
+        <!-- Clean Trending Tags -->
+        <div class="quick-tags">
+          <span class="quick-tags-label">Trending:</span>
+          <button class="pill-tag" onclick="quickSearch('Mission: Impossible - Ghost Protocol')">Mission: Impossible</button>
+          <button class="pill-tag" onclick="quickSearch('Avatar')">Avatar</button>
+          <button class="pill-tag" onclick="quickSearch('The Dark Knight Rises')">The Dark Knight Rises</button>
+          <button class="pill-tag" onclick="quickSearch('Deadpool')">Deadpool</button>
+          <button class="pill-tag" onclick="quickSearch('Interstellar')">Interstellar</button>
+        </div>
+      </div>
+
+      <!-- Error / Not Found Banner -->
+      <div class="fail">
+        <i class="fa-solid fa-circle-exclamation" style="margin-right: 6px;"></i>
+        Sorry! The movie you requested is not in our database. Please check the spelling or select from the suggestions.
+      </div>
+
+      <!-- VisionOS Minimalist Loader -->
+      <div id="loader">
+        <div class="spinner-ring"></div>
+        <div class="loader-title">Analyzing Film Features...</div>
+        <div class="loader-desc">Computing cosine similarity & analyzing audience reviews</div>
+      </div>
+    </section>
+
+    <!-- Results Section -->
+    <main class="results-wrapper">
+      <div class="results"></div>
+    </main>
+  </div>
+
+  <!-- VisionOS Spatial Footer -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        CineFlix <span style="color: var(--accent-red);">OS</span>
+        <div class="footer-tech">Cosine Similarity &bull; Multinomial Naive Bayes &bull; TMDB API</div>
+      </div>
+      <div class="footer-attribution">
+        Made with <span class="footer-heart">&hearts;</span> by <strong>Swastik Sengupta</strong>
+      </div>
+      <div class="footer-tech">
+        &copy; 2026 Swastik Sengupta. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@7.2.0/dist/js/autoComplete.min.js"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='autocomplete.js') }}"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='recommend.js') }}"></script>
+
+  <script>
+    function quickSearch(title) {
+      $('#autoComplete').val(title);
+      $('.movie-button').attr('disabled', false).trigger('click');
+    }
+  </script>
+</body>
+</html>

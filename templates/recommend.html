@@ -1,0 +1,184 @@
+<!-- ==========================================================================
+     CineFlix AI - Apple VisionOS Spatial Results View
+     Crafted by Swastik Sengupta
+     ========================================================================== -->
+
+<!-- Hero Movie Spatial Card -->
+<section class="movie-hero-card">
+  <div class="movie-hero-inner">
+    <div class="poster-box">
+      <img class="movie-poster-img" src="{{ poster }}" alt="{{ title }} Poster" onerror="this.src='/static/image.jpg';">
+    </div>
+
+    <div class="movie-info-content">
+      <h1 class="movie-title-large">{{ title }}</h1>
+
+      <div class="movie-meta-bar">
+        <span class="badge-pill badge-rating">
+          <i class="fa-solid fa-star"></i> {{ vote_average }} / 10 ({{ vote_count }} votes)
+        </span>
+        <span class="badge-pill">
+          <i class="fa-regular fa-clock"></i> {{ runtime }}
+        </span>
+        <span class="badge-pill">
+          <i class="fa-regular fa-calendar"></i> {{ release_date }}
+        </span>
+        <span class="badge-pill badge-status">
+          <i class="fa-solid fa-circle-check"></i> {{ status }}
+        </span>
+      </div>
+
+      {% if genres %}
+      <div class="genres-container">
+        {% for genre in genres.split(',') %}
+          <span class="genre-tag">{{ genre.strip() }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="overview-box">
+        <div class="overview-heading">Synopsis</div>
+        <p class="overview-text">{{ overview }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VisionOS Spatial Modals for Biographies -->
+{% for c in casts_list %}
+<div class="vision-modal-backdrop" id="cast_modal_{{ c.id }}" onclick="closeVisionModal('cast_modal_{{ c.id }}')">
+  <div class="vision-modal-window" onclick="event.stopPropagation()">
+    <button type="button" class="vision-modal-close" onclick="closeVisionModal('cast_modal_{{ c.id }}')" aria-label="Close">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <div class="vision-modal-body">
+      <img class="vision-modal-actor-img" src="{{ c.profile }}" alt="{{ c.name }}" onerror="this.src='/static/image.jpg';">
+      <div class="vision-modal-bio-content">
+        <h3 class="vision-modal-name">{{ c.name }}</h3>
+        <div class="vision-meta-row">
+          <span class="vision-meta-pill"><i class="fa-solid fa-user-tag" style="margin-right: 4px;"></i> {{ c.character }}</span>
+          <span class="vision-meta-pill"><i class="fa-regular fa-calendar" style="margin-right: 4px;"></i> {{ c.birthday }}</span>
+          <span class="vision-meta-pill"><i class="fa-solid fa-location-dot" style="margin-right: 4px;"></i> {{ c.place }}</span>
+        </div>
+        <div class="vision-bio-label">Biography</div>
+        <div class="vision-modal-bio-text">
+          {{ c.bio }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+<!-- Top Cast Section -->
+{% if casts_list|length > 0 %}
+<section class="section-header-block">
+  <div class="section-eyebrow">The Ensemble</div>
+  <h2 class="section-main-title">Top Cast</h2>
+</section>
+
+<div class="cast-grid">
+  {% for c in casts_list %}
+  <div class="cast-card" title="Click to view {{ c.name }}'s biography" onclick="openVisionModal('cast_modal_{{ c.id }}')">
+    <div class="cast-thumb-wrap">
+      <img src="{{ c.profile }}" alt="{{ c.name }}" onerror="this.src='/static/image.jpg';">
+      <div class="cast-hover-overlay">
+        <span class="btn-know-more">
+          <i class="fa-solid fa-circle-info mr-1"></i> Bio
+        </span>
+      </div>
+    </div>
+    <div class="cast-info-wrap">
+      <div class="cast-actor-name">{{ c.name }}</div>
+      <div class="cast-role-name">{{ c.character }}</div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- Audience Sentiment Section -->
+<section class="sentiment-section">
+  <div class="section-header-block" style="margin-bottom: 16px;">
+    <div class="section-eyebrow">Audience Analysis</div>
+    <h2 class="section-main-title">Sentiment & Critical Response</h2>
+  </div>
+
+  <div class="sentiment-dashboard-top">
+    <div class="sentiment-score-box">
+      <div class="score-circle">
+        {{ sentiment_percent }}%
+        <span class="score-label">Score</span>
+      </div>
+      <div class="score-details">
+        <h4>{{ sentiment_percent }}% Positive Community Sentiment</h4>
+        <p>Evaluated through TF-IDF Vectorization & Multinomial Naive Bayes Model</p>
+      </div>
+    </div>
+
+    <div class="sentiment-stats-bar">
+      <div class="stat-chip">
+        <div class="stat-val">{{ total_reviews }}</div>
+        <div class="stat-name">Analyzed</div>
+      </div>
+      <div class="stat-chip">
+        <div class="stat-val" style="color: #34d399;">{{ good_count }}</div>
+        <div class="stat-name">Positive</div>
+      </div>
+      <div class="stat-chip">
+        <div class="stat-val" style="color: #f87171;">{{ bad_count }}</div>
+        <div class="stat-name">Critical</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Review Cards Grid -->
+  <div class="reviews-grid">
+    {% for item in reviews_data %}
+    <div class="review-card">
+      <div class="review-text">
+        &ldquo;{{ item.text }}&rdquo;
+      </div>
+      <div class="review-footer">
+        {% if item.is_good %}
+        <span class="sentiment-pill good">
+          <i class="fa-solid fa-check"></i> Positive
+        </span>
+        {% else %}
+        <span class="sentiment-pill bad">
+          <i class="fa-solid fa-minus"></i> Critical
+        </span>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Recommended Movies Section -->
+{% if recommended_list|length > 0 %}
+<section class="recommendations-section">
+  <div class="section-header-block">
+    <div class="section-eyebrow">Cosine Similarity</div>
+    <h2 class="section-main-title">Recommended Movies For You</h2>
+  </div>
+
+  <div class="rec-grid">
+    {% for rec in recommended_list %}
+    <div class="rec-card" title="{{ rec.title }}" onclick="recommendcard(this)">
+      <div class="rec-poster-wrap">
+        <img src="{{ rec.poster }}" alt="{{ rec.title }}" onerror="this.src='/static/image.jpg';">
+        <div class="rec-overlay">
+          <button class="btn-rec-action">
+            <i class="fa-solid fa-play mr-1"></i> Recommend
+          </button>
+        </div>
+      </div>
+      <div class="rec-info">
+        <div class="rec-title">{{ rec.title|title }}</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
